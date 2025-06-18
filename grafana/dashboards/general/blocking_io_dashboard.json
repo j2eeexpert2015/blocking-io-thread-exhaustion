@@ -261,7 +261,7 @@
             "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "",
+            "axisLabel": "Response Time (ms)",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "barWidthFactor": 0.6,
@@ -303,7 +303,7 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "none"
         },
         "overrides": [
           {
@@ -318,6 +318,14 @@
                   "fixedColor": "red",
                   "mode": "fixed"
                 }
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "decimals",
+                "value": 0
               }
             ]
           },
@@ -333,6 +341,14 @@
                   "fixedColor": "green",
                   "mode": "fixed"
                 }
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "decimals",
+                "value": 0
               }
             ]
           }
@@ -367,7 +383,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "rate(simulate_blockingio_execution_seconds_sum[1m]) / rate(simulate_blockingio_execution_seconds_count[1m])",
+          "expr": "(rate(simulate_blockingio_execution_seconds_sum[1m]) / rate(simulate_blockingio_execution_seconds_count[1m])) * 1000",
           "interval": "",
           "legendFormat": "Blocking Avg Response Time",
           "refId": "A"
@@ -377,13 +393,13 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "rate(simulate_virtual_execution_seconds_sum[1m]) / rate(simulate_virtual_execution_seconds_count[1m])",
+          "expr": "(rate(simulate_virtual_execution_seconds_sum[1m]) / rate(simulate_virtual_execution_seconds_count[1m])) * 1000",
           "interval": "",
           "legendFormat": "Virtual Avg Response Time",
           "refId": "B"
         }
       ],
-      "title": "Average Response Time Comparison",
+      "title": "Average Response Time Comparison (milliseconds)",
       "type": "timeseries"
     }
   ],
