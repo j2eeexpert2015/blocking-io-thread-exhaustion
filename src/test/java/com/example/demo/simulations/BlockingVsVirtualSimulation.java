@@ -8,36 +8,95 @@ import static io.gatling.javaapi.http.HttpDsl.*;
 
 public class BlockingVsVirtualSimulation extends Simulation {
 
-    // Base URL
+    // Configuration
     private static final String BASE_URL = "http://localhost:8080";
+    private static final int USERS_PER_SCENARIO = 25;
+    private static final int RAMP_UP_DURATION = 10; // seconds
+    private static final int TEST_DURATION = 60; // seconds
 
-    // User count and duration
-    private static final int USER_COUNT = 20;
-    private static final int RAMP_UP_SECONDS = 10;
-    private static final int TEST_DURATION_SECONDS = 30;
+    // HTTP Protocol Configuration
+    HttpProtocolBuilder httpProtocol = http
+            .baseUrl(BASE_URL)
+            .acceptHeader("application/json")
+            .contentTypeHeader("application/json")
+            .userAgentHeader("Gatling Load Test");
 
-    // HTTP Protocol
-    HttpProtocolBuilder httpProtocol = http.baseUrl(BASE_URL)
-            .acceptHeader("application/json");
-
-    // Blocking scenario
-    ScenarioBuilder blockingScenario = scenario("Blocking I/O Scenario")
-            .during(TEST_DURATION_SECONDS).on(
+    // Scenario 1: Blocking I/O with Platform Threads
+    ScenarioBuilder blockingScenario = scenario("Blocking Platform Thread Scenario")
+            .during(TEST_DURATION).on(
                     exec(http("Blocking Request")
-                            .get("/simulate"))
+                            .get("/api/simulate-blocking")
+                            .check(status().is(200))
+                    )
+                    .pause(1, 3) // Random pause between requests
             );
 
-    // Virtual thread scenario
+    // Scenario 2: Virtual Thread Implementation
     ScenarioBuilder virtualScenario = scenario("Virtual Thread Scenario")
-            .during(TEST_DURATION_SECONDS).on(
-                    exec(http("Virtual Request")
-                            .get("/simulate-virtual"))
+            .during(TEST_DURATION).on(
+                    exec(http("Virtual Thread Request")
+                            .get("/api/simulate-virtual")
+                            .check(status().is(200))
+                    )
+                    .pause(1, 3) // Random pause between requests
             );
 
+    // Scenario 3: Async Platform Thread (Limited Pool)
+    ScenarioBuilder asyncPlatformScenario = scenario("Async Platform Thread Scenario")
+            .during(TEST_DURATION).on(
+                    exec(http("Async Platform Request")
+                            .get("/api/simulate-async-platform")
+                            .check(status().is(200))
+                    )
+                    .pause(1, 3)
+            );
+
+    // Scenario 4: Async Virtual Thread
+    ScenarioBuilder asyncVirtualScenario = scenario("Async Virtual Thread Scenario")
+            .during(TEST_DURATION).on(
+                    exec(http("Async Virtual Request")
+                            .get("/api/simulate-async-virtual")
+                            .check(status().is(200))
+                    )
+                    .pause(1, 3)
+            );
+
+    // Scenario 5: CPU Intensive Task
+    ScenarioBuilder cpuIntensiveScenario = scenario("CPU Intensive Scenario")
+            .during(TEST_DURATION).on(
+                    exec(http("CPU Intensive Request")
+                            .get("/api/simulate-cpu-intensive")
+                            .check(status().is(200))
+                    )
+                    .pause(2, 5) // Longer pause for CPU-intensive tasks
+            );
+
+    // Load Test Setup
     {
         setUp(
-                blockingScenario.injectOpen(rampUsers(USER_COUNT).during(RAMP_UP_SECONDS)),
-                virtualScenario.injectOpen(rampUsers(USER_COUNT).during(RAMP_UP_SECONDS))
-        ).protocols(httpProtocol);
+                // Run all scenarios concurrently to simulate real-world load
+                blockingScenario.injectOpen(
+                        rampUsers(USERS_PER_SCENARIO).during(RAMP_UP_DURATION)
+                ),
+                virtualScenario.injectOpen(
+                        rampUsers(USERS_PER_SCENARIO).during(RAMP_UP_DURATION)
+                ),
+                asyncPlatformScenario.injectOpen(
+                        rampUsers(USERS_PER_SCENARIO).during(RAMP_UP_DURATION)
+                ),
+                asyncVirtualScenario.injectOpen(
+                        rampUsers(USERS_PER_SCENARIO).during(RAMP_UP_DURATION)
+                ),
+                cpuIntensiveScenario.injectOpen(
+                        rampUsers(10).during(RAMP_UP_DURATION) // Fewer users for CPU-intensive tasks
+                )
+        )
+        .protocols(httpProtocol)
+        .assertions(
+                // Performance assertions
+                global().responseTime().max().lt(10000), // Max response time < 10 seconds
+                global().successfulRequests().percent().gt(95.0), // 95% success rate
+                forAll().responseTime().percentile3().lt(5000) // 99th percentile < 5 seconds
+        );
     }
 }

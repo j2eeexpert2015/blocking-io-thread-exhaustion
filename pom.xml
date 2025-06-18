@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -14,6 +15,7 @@
 	<artifactId>blocking-io-thread-exhaustion</artifactId>
 	<version>1.0.0</version>
 	<name>Blocking IO Thread Exhaustion Demo</name>
+	<description>Demo project comparing platform threads vs virtual threads performance</description>
 
 	<properties>
 		<java.version>21</java.version>
@@ -21,66 +23,57 @@
 		<gatling-maven-plugin.version>4.10.0</gatling-maven-plugin.version>
 	</properties>
 
-	<!--<repositories>
-		<repository>
-			<id>gatling</id>
-			<url>https://repo.gatling.io/releases</url>
-		</repository>
-	</repositories>-->
-
 	<dependencies>
-		<!-- Spring Boot -->
+		<!-- Spring Boot Core -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		
+		<!-- Actuator for monitoring -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
+		
+		<!-- Prometheus metrics -->
 		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
+		
+		<!-- AspectJ for @Timed annotation -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
+			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
+
+		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjweaver</artifactId>
-		</dependency>
 
-		<!-- Gatling Java DSL -->
+		<!-- Gatling Dependencies -->
 		<dependency>
 			<groupId>io.gatling</groupId>
 			<artifactId>gatling-core-java</artifactId>
 			<version>${gatling.version}</version>
 			<scope>test</scope>
 		</dependency>
-
-		<!-- Gatling HTTP Java DSL -->
 		<dependency>
 			<groupId>io.gatling</groupId>
 			<artifactId>gatling-http-java</artifactId>
 			<version>${gatling.version}</version>
 			<scope>test</scope>
 		</dependency>
-
-		<!-- Gatling Charts -->
 		<dependency>
 			<groupId>io.gatling.highcharts</groupId>
 			<artifactId>gatling-charts-highcharts</artifactId>
 			<version>${gatling.version}</version>
 			<scope>test</scope>
 		</dependency>
-
-
 	</dependencies>
 
 	<build>
@@ -93,6 +86,9 @@
 				<groupId>io.gatling</groupId>
 				<artifactId>gatling-maven-plugin</artifactId>
 				<version>${gatling-maven-plugin.version}</version>
+				<configuration>
+					<simulationClass>com.example.demo.simulations.BlockingVsVirtualSimulation</simulationClass>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

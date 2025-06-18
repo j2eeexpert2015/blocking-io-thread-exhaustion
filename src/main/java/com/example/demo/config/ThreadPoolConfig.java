@@ -11,8 +11,29 @@ import java.util.concurrent.Executors;
 @EnableAsync
 public class ThreadPoolConfig {
 
-    @Bean(name = "limitedThreadPool")
-    public Executor limitedThreadPoolExecutor() {
-        return Executors.newFixedThreadPool(10); // Simulate platform thread exhaustion
+    /**
+     * Limited platform thread pool to simulate thread exhaustion
+     * Under high load, this pool will be exhausted causing request queuing
+     */
+    @Bean(name = "limitedPlatformThreadPool")
+    public Executor limitedPlatformThreadPoolExecutor() {
+        return Executors.newFixedThreadPool(10); // Intentionally limited for demo
+    }
+
+    /**
+     * Virtual thread executor - can handle much higher concurrency
+     * Virtual threads are lightweight and don't cause platform thread exhaustion
+     */
+    @Bean(name = "virtualThreadExecutor")
+    public Executor virtualThreadExecutor() {
+        return Executors.newVirtualThreadPerTaskExecutor();
+    }
+
+    /**
+     * Standard platform thread pool for comparison
+     */
+    @Bean(name = "standardPlatformThreadPool")
+    public Executor standardPlatformThreadPoolExecutor() {
+        return Executors.newCachedThreadPool(); // Can grow as needed
     }
 }

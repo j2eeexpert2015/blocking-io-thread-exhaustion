@@ -1,94 +1,409 @@
 {
-  "title": "Blocking vs Virtual I/O Metrics",
-  "uid": "blocking-vs-virtual-metrics",
-  "timezone": "browser",
-  "schemaVersion": 36,
-  "version": 3,
-  "refresh": "5s",
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Performance comparison between platform threads and virtual threads",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
   "panels": [
     {
-      "type": "timeseries",
-      "title": "Blocking I/O Total Execution Time (sum)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "vis": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Blocking I/O Rate"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
       "id": 1,
-      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
       "targets": [
         {
-          "expr": "sum(rate(simulate_blockingio_execution_seconds_sum[1m]))",
-          "legendFormat": "Blocking Total Exec Time",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "rate(simulate_blockingio_execution_seconds_count[1m])",
+          "interval": "",
+          "legendFormat": "Blocking I/O Rate",
           "refId": "A"
         }
-      ]
+      ],
+      "title": "Blocking I/O Request Rate",
+      "type": "timeseries"
     },
     {
-      "type": "timeseries",
-      "title": "Virtual I/O Total Execution Time (sum)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "vis": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Virtual Thread Rate"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
       "id": 2,
-      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
       "targets": [
         {
-          "expr": "sum(rate(simulate_virtual_execution_seconds_sum[1m]))",
-          "legendFormat": "Virtual Total Exec Time",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "rate(simulate_virtual_execution_seconds_count[1m])",
+          "interval": "",
+          "legendFormat": "Virtual Thread Rate",
           "refId": "A"
         }
-      ]
+      ],
+      "title": "Virtual Thread Request Rate",
+      "type": "timeseries"
     },
     {
-      "type": "timeseries",
-      "title": "Blocking I/O Max Duration",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "vis": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Blocking Avg Response Time"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Virtual Avg Response Time"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
       "id": 3,
-      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
       "targets": [
         {
-          "expr": "max(simulate_blockingio_execution_seconds_max)",
-          "legendFormat": "Blocking Max Time",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "rate(simulate_blockingio_execution_seconds_sum[1m]) / rate(simulate_blockingio_execution_seconds_count[1m])",
+          "interval": "",
+          "legendFormat": "Blocking Avg Response Time",
           "refId": "A"
-        }
-      ]
-    },
-    {
-      "type": "timeseries",
-      "title": "Virtual I/O Max Duration",
-      "id": 4,
-      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
-      "targets": [
+        },
         {
-          "expr": "max(simulate_virtual_execution_seconds_max)",
-          "legendFormat": "Virtual Max Time",
-          "refId": "A"
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "rate(simulate_virtual_execution_seconds_sum[1m]) / rate(simulate_virtual_execution_seconds_count[1m])",
+          "interval": "",
+          "legendFormat": "Virtual Avg Response Time",
+          "refId": "B"
         }
-      ]
-    },
-    {
-      "type": "timeseries",
-      "title": "Blocking I/O Call Count",
-      "id": 5,
-      "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
-      "targets": [
-        {
-          "expr": "sum(rate(simulate_blockingio_execution_seconds_count[1m]))",
-          "legendFormat": "Blocking Calls",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "type": "timeseries",
-      "title": "Virtual I/O Call Count",
-      "id": 6,
-      "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
-      "targets": [
-        {
-          "expr": "sum(rate(simulate_virtual_execution_seconds_count[1m]))",
-          "legendFormat": "Virtual Calls",
-          "refId": "A"
-        }
-      ]
+      ],
+      "title": "Average Response Time Comparison",
+      "type": "timeseries"
     }
   ],
-  "templating": { "list": [] },
-  "annotations": { "list": [] },
+  "refresh": "5s",
+  "schemaVersion": 41,
+  "tags": [
+    "java",
+    "spring-boot",
+    "virtual-threads"
+  ],
+  "templating": {
+    "list": []
+  },
   "time": {
-    "from": "now-6h",
+    "from": "now-15m",
     "to": "now"
-  }
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Blocking IO Performance Dashboard",
+  "uid": "blocking-io-perf",
+  "version": 1
 }

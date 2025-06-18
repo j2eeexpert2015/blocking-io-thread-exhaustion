@@ -1,8 +1,19 @@
 global:
   scrape_interval: 5s
+  evaluation_interval: 5s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
 
 scrape_configs:
   - job_name: 'spring-boot-app'
     metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
     static_configs:
       - targets: ['host.docker.internal:8080']
+    scrape_timeout: 4s
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
